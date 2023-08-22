@@ -204,36 +204,55 @@ AddEventHandler('carwash:DoVehicleWashParticles', function(vehNet, washer, use_p
             table.insert(ptfxHandles, CreatedParticle)
         end
 
-        local offset = min_offsets.y - 1.0
+        local offset = min_offsets.y
         local prop_offset = min_offsets.y
 
-        while offset < max_offsets.y + 1.0 and DoesEntityExist(vehicle) do
+        while offset < max_offsets.y and DoesEntityExist(vehicle) do
             for i = 1, #ptfxHandles do
-                SetParticleFxLoopedOffsets(ptfxHandles[i], ptfxData[i].offset[1], ptfxData[i].offset[2] + offset, ptfxData[i].offset[3], ptfxData[i].rot[1], ptfxData[i].rot[2], ptfxData[i].rot[3])
+                SetParticleFxLoopedOffsets(ptfxHandles[i], ptfxData[i].offset[1], offset, ptfxData[i].offset[3], ptfxData[i].rot[1], ptfxData[i].rot[2], ptfxData[i].rot[3])
             end
+
             if side_props ~= nil then
                 for i = 1, #side_props, 1 do
                     SetEntityCoordsNoOffset(side_props[i].prop, GetOffsetFromEntityInWorldCoords(vehicle, side_props[i].offset.x, prop_offset, side_props[i].offset.z))
                 end
                 prop_offset += 0.0055
             end
-            offset = offset + 0.0075
+
+            offset += 0.0055
             Wait(0)
+        end
+
+        if Config.double_clean == true then
+            while min_offsets.y < offset and DoesEntityExist(vehicle) do
+                for i = 1, #ptfxHandles, 1 do
+                    SetParticleFxLoopedOffsets(ptfxHandles[i], ptfxData[i].offset[1], offset, ptfxData[i].offset[3], ptfxData[i].rot[1], ptfxData[i].rot[2], ptfxData[i].rot[3])
+                end
+                if side_props ~= nil then
+                    for i = 1, #side_props, 1 do
+                        SetEntityCoordsNoOffset(side_props[i].prop, GetOffsetFromEntityInWorldCoords(vehicle, side_props[i].offset.x, prop_offset, side_props[i].offset.z))
+                    end
+                    prop_offset -= 0.0055
+                end
+                offset -= 0.0055
+                Wait(0)
+            end
         end
 
         for i = 1, #ptfxHandles do StopParticleFxLooped(ptfxHandles[i], false) end
 
+        if side_props ~= nil then
+            for i = 1, #side_props, 1 do DeleteEntity(side_props[i].prop) end
+            side_props = nil
+        end
+        
         if washer == true then
-            if side_props ~= nil then
-                for i = 1, #side_props, 1 do DeleteEntity(side_props[i].prop) end
-                side_props = nil
-            end
             RequestNetworkControlOfEntity(vehicle)
             SetVehicleDirtLevel(vehicle, 0.0)
             WashDecalsFromVehicle(vehicle, 1.0)
             Wait(1000)
             FreezeEntityPosition(vehicle, false)
-            Notify('Vehicle Washed')
+            Notify('Vehicle Washed', 'success')
             WaitingForWash = false
             washingVehicle = false
         end

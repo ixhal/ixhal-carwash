@@ -6,6 +6,7 @@ Config = {
     cost = 30,--How much it costs for a car wash
     cash_account_name = 'cash',--Name of your cash account (ESX would be 'money')
     bank_account_name = 'bank',--Name of your bank account balance
+    double_clean = true,--This makes the washing process take 2x longer by making the particles loop back on them self.
 
     locations = {
         {
