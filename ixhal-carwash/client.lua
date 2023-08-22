@@ -327,31 +327,41 @@ local function CreateCarwashBlip(coords, name)
     return blip
 end
 
-Citizen.CreateThread(function()
-    local currentCarWashBlip = nil
-    local currentCarWashBlipLocation = nil
+if Config.show_all_blips then
+    local blips = {}
 
-    while true do
-        local coords = GetEntityCoords(PlayerPedId())
-        local closest = 999999
-        local closestCoords, closestName 
-
-        for _, carwash in pairs(Config.locations) do
-            local dstcheck = #(coords.xy - carwash.location.xy)
-
-            if dstcheck < closest then
-                closest = dstcheck
-                closestCoords = carwash.location
-                closestName = carwash.name
-            end
+    for _, carwash in pairs(Config.locations) do
+        if carwash.show_blip == true then
+            blips[#blips +1] = CreateCarwashBlip(carwash.location, carwash.name)
         end
-
-        if currentCarWashBlipLocation ~= closestCoords then
-            if DoesBlipExist(currentCarWashBlip) then RemoveBlip(currentCarWashBlip) end
-            currentCarWashBlip = CreateCarwashBlip(closestCoords, closestName)
-            currentCarWashBlipLocation = closestCoords
-        end
-
-        Citizen.Wait(10000)
     end
-end)
+else
+    Citizen.CreateThread(function()
+        local currentCarWashBlip = nil
+        local currentCarWashBlipLocation = nil
+    
+        while true do
+            local coords = GetEntityCoords(PlayerPedId())
+            local closest = 999999
+            local closestCoords, closestName 
+    
+            for _, carwash in pairs(Config.locations) do
+                local dstcheck = #(coords.xy - carwash.location.xy)
+    
+                if dstcheck < closest then
+                    closest = dstcheck
+                    closestCoords = carwash.location
+                    closestName = carwash.name
+                end
+            end
+    
+            if currentCarWashBlipLocation ~= closestCoords then
+                if DoesBlipExist(currentCarWashBlip) then RemoveBlip(currentCarWashBlip) end
+                currentCarWashBlip = CreateCarwashBlip(closestCoords, closestName)
+                currentCarWashBlipLocation = closestCoords
+            end
+    
+            Citizen.Wait(10000)
+        end
+    end)
+end
