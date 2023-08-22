@@ -15,19 +15,19 @@ Config = {
             name = 'Strawberry Carwash',--Name of the carwash (Only used for blips)
             location = vector3(23.68, -1391.92, 29.32),--Location for the carwash
             use_props = true,--Should we spawn the props? Some locations it will look out of place to have the props.
-            show_blip = true,--This only takes effect if show_all_blips is set to true, Set this to false to disable to blip for this location
+            show_blip = true,--Should this carwash create a blip?
         },
         {
             name = 'Little Seoul Carwash',--Name of the carwash (Only used for blips)
             location = vector3(-699.84, -934.0, 19.0),--Location for the carwash
             use_props = true,--Should we spawn the props? Some locations it will look out of place to have the props.
-            show_blip = true,--This only takes effect if show_all_blips is set to true, Set this to false to disable to blip for this location
+            show_blip = true,--Should this carwash create a blip?
         },
         {
             name = 'Paleto Carwash',--Name of the carwash (Only used for blips)
             location = vector3(-216.4, 6199.92, 31.48),--Location for the carwash
             use_props = false,--Should we spawn the props? Some locations it will look out of place to have the props.
-            show_blip = true,--This only takes effect if show_all_blips is set to true, Set this to false to disable to blip for this location
+            show_blip = true,--Should this carwash create a blip?
         },
     },
 }

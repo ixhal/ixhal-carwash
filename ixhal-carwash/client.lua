@@ -348,7 +348,7 @@ else
             for _, carwash in pairs(Config.locations) do
                 local dstcheck = #(coords.xy - carwash.location.xy)
     
-                if dstcheck < closest then
+                if dstcheck < closest and carwash.show_blip == true then
                     closest = dstcheck
                     closestCoords = carwash.location
                     closestName = carwash.name
